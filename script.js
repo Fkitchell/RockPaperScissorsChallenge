@@ -1,7 +1,64 @@
 const gameOptions = ['Rock', 'Paper', 'Scissors'];
 const gameResults = ['Player Wins', 'Player Loses', 'Player Ties'];
+let userWins = 0;
+let userLosses = 0;
+let userTies = 0;
 
 buildGameUI();
+
+function buildGameUI() {
+    var gameContainer = document.createElement('div');
+    gameContainer.id = 'gameContainer';
+    gameContainer.className = 'gameContainer';
+
+    var gameTitle = document.createElement('h1');
+    gameTitle.id = 'gameTitle';
+    gameTitle.className = 'gameTitle';
+    gameTitle.innerText = 'Rock Paper Scissors';
+
+    var gameRules = document.createElement('p');
+    gameRules.id = 'gameRules';
+    gameRules.className = 'gameRules';
+    gameRules.innerText = 'The rules are simple.\n\n You pick Rock, Paper, or Scissors.\n\n The computer picks Rock, Paper, or Scissors. \n\n Rock beats Scissors, Scissors beats Paper, and Paper beats Rock.';
+
+    var gameButtonRock = document.createElement('button');
+    gameButtonRock.id = 'gameButtonRock';
+    gameButtonRock.className = 'gameButton';
+    gameButtonRock.innerText = 'Rock';
+    gameButtonRock.addEventListener('click', function () {
+        playGame('rock');
+    });
+
+    var gameButtonPaper = document.createElement('button');
+    gameButtonPaper.id = 'gameButtonPaper';
+    gameButtonPaper.className = 'gameButton';
+    gameButtonPaper.innerText = 'Paper';
+    gameButtonPaper.addEventListener('click', function () {
+        playGame('paper');
+    });
+
+    var gameButtonScissors = document.createElement('button');
+    gameButtonScissors.id = 'gameButtonScissors';
+    gameButtonScissors.className = 'gameButton';
+    gameButtonScissors.innerText = 'Scissors';
+    gameButtonScissors.addEventListener('click', function () {
+        playGame('scissors');
+    });
+
+    var gameResults = document.createElement('div');
+    gameResults.id = 'gameResults';
+    gameResults.className = 'gameResults';
+
+    gameContainer.appendChild(gameTitle);
+    gameContainer.appendChild(gameRules);
+    gameContainer.appendChild(gameButtonRock);
+    gameContainer.appendChild(gameButtonPaper);
+    gameContainer.appendChild(gameButtonScissors);
+    gameContainer.appendChild(gameResults);
+    let body = document.body;
+
+    body.appendChild(gameContainer);
+}
 
 function getComputerChoice() {
     let computerIndex = Math.floor(Math.random() * 3);
@@ -11,10 +68,10 @@ function getComputerChoice() {
 
 function playGameRound(playerSelection, computerSelection) {
     console.log('Player Picks: ' + playerSelection + '\nComputer Picks: ' + computerSelection);
-    alert('Player Picks: ' + playerSelection + '\nComputer Picks: ' + computerSelection);
+    document.getElementById('gameResults').innerText = '\n\nPlayer Picks: ' + playerSelection + '\nComputer Picks: ' + computerSelection + document.getElementById('gameResults').innerText;
 
     if (computerSelection == playerSelection) //player picks same as computer
-    { 
+    {
         return gameResults[2];
     }
     else if (playerSelection == gameOptions[0]) {//player picks Rock
@@ -47,64 +104,42 @@ function playGameRound(playerSelection, computerSelection) {
         return "you always lose..."
 }
 
-function getUserChoice() {
+function getGameOptionFromString(input) {
     let userIndex = '';
-    var promptStatement = gameOptions.join(', ') + '?';
-    let inputInvalid = true;
-
-    do {
-        let input = prompt(promptStatement);
-
-        switch (input.toLocaleLowerCase()) {
-            case gameOptions[0].toLocaleLowerCase():
-            case '0':
-                userIndex = 0;
-                inputInvalid = false;
-                break;
-            case gameOptions[1].toLocaleLowerCase():
-            case '1':
-                userIndex = 1;
-                inputInvalid = false;
-                break;
-            case gameOptions[2].toLocaleLowerCase():
-            case '2':
-                userIndex = 2;
-                inputInvalid = false;
-                break;
-            default:
-                inputInvalid = true;
-                break;
-        }
-        
-        if (inputInvalid)
-        {
-            alert('Invalid input. Please enter Rock, Paper, or Scissors');
-            promptStatement = 'The last prompt you gave was invalid. Please try again. \n' + gameOptions.join(', ') + '?';
-        }
-
-    } while (inputInvalid);
+    
+    switch (input.toLocaleLowerCase()) {
+        case gameOptions[0].toLocaleLowerCase():
+        case '0':
+            userIndex = 0;
+            break;
+        case gameOptions[1].toLocaleLowerCase():
+        case '1':
+            userIndex = 1;
+            break;
+        case gameOptions[2].toLocaleLowerCase():
+        case '2':
+            userIndex = 2;
+            break;
+        default:
+            console.log('Invalid input. ');
+            break;
+    }
 
     return gameOptions[userIndex];
 }
 
-function playGame() {
-    var userWins = 0;
-    var userLosses = 0;
-    var userTies = 0;
+function playGame(userSelection) {
+    var result = playGameRound(getGameOptionFromString(userSelection), getComputerChoice());
 
-    for (let index = 0; index < 5; index++) {
-        var result = playGameRound(getUserChoice(), getComputerChoice());
-        
-        if (result == gameResults[0]) {
-            userWins++;
-        }
-        else if (result == gameResults[1]) {
-            userLosses++;
-        } else if (result == gameResults[2]) {
-            userTies++;
-        }
-
-        console.log(result + '\n' + ' Wins: ' + userWins + ' Losses: ' + userLosses + ' Ties: ' + userTies);
-        alert(result + '\n' + ' Wins: ' + userWins + ' Losses: ' + userLosses + ' Ties: ' + userTies)
+    if (result == gameResults[0]) {
+        userWins++;
     }
+    else if (result == gameResults[1]) {
+        userLosses++;
+    } else if (result == gameResults[2]) {
+        userTies++;
+    }
+
+    console.log(result + '\n' + ' Wins: ' + userWins + ' Losses: ' + userLosses + ' Ties: ' + userTies);
+    document.getElementById('gameResults').innerText = '\n' + result + '\n' + ' Wins: ' + userWins + ' Losses: ' + userLosses + ' Ties: ' + userTies + document.getElementById('gameResults').innerText;
 }
